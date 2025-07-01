@@ -3,9 +3,15 @@ import apiRequest from './api';
 export const authService = {
   // Email/Password Authentication
   login: async (credentials) => {
-    return apiRequest('/auth/login', {
+    console.log(credentials.email)
+    const formData = new FormData();
+    formData.append('username', credentials.email);  // Note: use 'username', not 'email'
+    formData.append('password', credentials.password);
+
+    // login logics 
+    return apiRequest('/api/v1/login/access-token', {
       method: 'POST',
-      body: JSON.stringify(credentials),
+      body: formData,
     });
   },
 
