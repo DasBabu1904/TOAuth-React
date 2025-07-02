@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import apiRequest from '../services/api';
+import {apiRequest} from '../services/api';
 
 const SocialCallback = ({ provider }) => {
   const [searchParams] = useSearchParams();

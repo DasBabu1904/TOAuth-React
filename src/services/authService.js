@@ -1,13 +1,13 @@
-import apiRequest from './api';
+import { apiRequest } from './api';
 
 export const authService = {
   // Email/Password Authentication
   login: async (credentials) => {
-    console.log(credentials.email)
+    // console.log(credentials.email)
     const formData = new FormData();
     formData.append('username', credentials.email);  // Note: use 'username', not 'email'
     formData.append('password', credentials.password);
-
+    console.log(formData.get('password'))
     // login logics 
     return apiRequest('/api/v1/login/access-token', {
       method: 'POST',
@@ -22,11 +22,11 @@ export const authService = {
     });
   },
 
-  logout: async () => {
-    return apiRequest('/auth/logout', {
-      method: 'POST',
-    });
-  },
+  // logout: async () => {
+  //   return apiRequest('/auth/logout', {
+  //     method: 'POST',
+  //   });
+  // },
 
   // Social Authentication
   googleAuth: () => {

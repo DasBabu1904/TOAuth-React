@@ -11,19 +11,54 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const token = authService.getToken();
-    if (token) {
-      setIsAuthenticated(true);
-    }
-    setLoading(false);
+    const initializeAuth = async () => {
+      const token = authService.getToken();
+      console.log('Initializing auth, token found:', !!token);
+      
+      if (token) {
+        try {
+          const savedUser = localStorage.getItem('user');
+          console.log('Saved user found:', !!savedUser);
+          
+          if (savedUser) {
+            setUser(JSON.parse(savedUser));
+          }
+          setIsAuthenticated(true);
+          console.log('Auth state restored successfully');
+        } catch (error) {
+          console.log('Error restoring auth state:', error);
+          authService.removeToken();
+          localStorage.removeItem('user');
+        }
+      } else {
+        console.log('No token found, user not authenticated');
+      }
+      setLoading(false);
+    };
+    
+    initializeAuth();
   }, []);
 
   const login = async (credentials) => {
     try {
+      // console.log('Login credentials: auth context', credentials); // Debug log: g
       const response = await authService.login(credentials);
-      authService.setToken(response.token);
-      setUser(response.user);
-      setIsAuthenticated(true);
+      // console.log('Login response: auth context', response); // Debug log
+      
+      // Handle different possible response structures
+      const token = response.access_token || response.token;
+      console.log('Token extracted:', !!token);
+      
+      if (token) {
+        authService.setToken(token);
+        const userData = response.user || { email: credentials.email };
+        setUser(userData);
+        localStorage.setItem('user', JSON.stringify(userData));
+        setIsAuthenticated(true);
+        console.log('Login successful, token and user saved');
+      } else {
+        throw new Error('No token received from server');
+      }
       return response;
     } catch (error) {
       throw error;
@@ -44,13 +79,12 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      await authService.logout();
-    } catch (error) {
-      console.error('Logout error:', error);
-    } finally {
       authService.removeToken();
+      localStorage.removeItem('user');
       setUser(null);
       setIsAuthenticated(false);
+    } catch (error) {
+      console.error('Logout error:', error);
     }
   };
 

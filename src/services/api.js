@@ -1,22 +1,42 @@
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const apiRequest = async (endpoint, options = {}) => {
+  
   const url = `${API_BASE_URL}${endpoint}`;
+  console.log(url)
   const config = {
-    headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
+    // headers: {
+    //   // 'Content-Type': 'application/json',
+    //   ...options.headers,
+    // },
     ...options,
   };
-
+  // console.log(url,config)
   const response = await fetch(url, config);
   
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
   }
   
+  // console.log(response.json())
   return response.json();
 };
 
-export default apiRequest;
+const makeAuthorizedRequest = async (endpoint,options={}) => {
+  const token = localStorage.getItem('access_token');
+  
+  const url =`${API_BASE_URL}${endpoint}`
+  console.log("in api js url= ",url)
+  const config={
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    ...options
+  }
+  const response = await fetch(url,config );
+  
+  return response.json();
+};
+
+export { apiRequest, makeAuthorizedRequest };
