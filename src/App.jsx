@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Login from './components/Login';
@@ -7,11 +7,12 @@ import Dashboard from './components/Dashboard';
 import SocialCallback from './components/SocialCallback';
 import './App.css';
 
-function App() {
+function AppContent() {
+  const location = useLocation();
+  const isAuthPage = ['/login', '/register', '/'].includes(location.pathname);
+  
   return (
-    <AuthProvider>
-      <Router>
-        <div className="App">
+    <div className={`App ${isAuthPage ? 'auth-page' : ''}`}>
           <Routes>
             <Route path="/" element={<Navigate to="/login" replace />} />
             <Route path="/login" element={<Login />} />
@@ -26,6 +27,14 @@ function App() {
             <Route path="/auth/github/callback" element={<SocialCallback provider="github" />} />
           </Routes>
         </div>
+  );
+}
+
+function App() {
+  return (
+    <AuthProvider>
+      <Router>
+        <AppContent />
       </Router>
     </AuthProvider>
   );

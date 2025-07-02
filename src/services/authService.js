@@ -1,4 +1,4 @@
-import { apiRequest } from './api';
+import { apiRequest,apiRequestJsonBody } from './api';
 
 export const authService = {
   // Email/Password Authentication
@@ -16,7 +16,7 @@ export const authService = {
   },
 
   register: async (userData) => {
-    return apiRequest('/auth/register', {
+    return apiRequestJsonBody('/api/v1/users/open', {
       method: 'POST',
       body: JSON.stringify(userData),
     });

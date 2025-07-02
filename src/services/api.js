@@ -22,8 +22,32 @@ const apiRequest = async (endpoint, options = {}) => {
   return response.json();
 };
 
+
+
+const apiRequestJsonBody = async (endpoint, options = {}) => {
+  
+  const url = `${API_BASE_URL}${endpoint}`;
+  console.log(url)
+  const config = {
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    },
+    ...options,
+  };
+  console.log(url,config)
+  const response = await fetch(url, config);
+  
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+  
+  // console.log(response.json())
+  return response.json();
+};
+
 const makeAuthorizedRequest = async (endpoint,options={}) => {
-  const token = localStorage.getItem('access_token');
+  const token = localStorage.getItem('authToken');
   
   const url =`${API_BASE_URL}${endpoint}`
   console.log("in api js url= ",url)
@@ -39,4 +63,4 @@ const makeAuthorizedRequest = async (endpoint,options={}) => {
   return response.json();
 };
 
-export { apiRequest, makeAuthorizedRequest };
+export { apiRequest, makeAuthorizedRequest,apiRequestJsonBody };
