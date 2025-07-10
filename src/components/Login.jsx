@@ -20,7 +20,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      console.log("into component ",formData)
+      // console.log("into component ",formData)
       await login(formData);
       navigate('/dashboard');
     } catch (error) {

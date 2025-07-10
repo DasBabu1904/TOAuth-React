@@ -7,7 +7,7 @@ export const authService = {
     const formData = new FormData();
     formData.append('username', credentials.email);  // Note: use 'username', not 'email'
     formData.append('password', credentials.password);
-    console.log(formData.get('password'))
+    // console.log("formdata=",formData.get("username"))
     // login logics 
     return apiRequest('/api/v1/login/access-token', {
       method: 'POST',
@@ -22,6 +22,13 @@ export const authService = {
     });
   },
 
+  registerGoogle: async (googleData) => {
+    return apiRequestJsonBody('/api/v1/users/register_google', {
+      method: 'POST',
+      body: JSON.stringify(googleData),
+    });
+  },
+
   // logout: async () => {
   //   return apiRequest('/auth/logout', {
   //     method: 'POST',
@@ -29,12 +36,26 @@ export const authService = {
   // },
 
   // Social Authentication
-  googleAuth: () => {
+  googleAuth: async () => {
     const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
     const redirectUri = `${window.location.origin}/auth/google/callback`;
     const scope = 'openid email profile';
     
-    const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}`;
+    // Generate state parameter for CSRF protection
+    const state = btoa(Math.random().toString(36).substring(2, 15));
+    sessionStorage.setItem('oauth_state', state);
+    
+    // Build auth URL with security parameters
+    const params = new URLSearchParams({
+      client_id: clientId,
+      redirect_uri: redirectUri,
+      response_type: 'code',
+      scope: scope,
+      state: state,
+      access_type: 'offline', // For refresh tokens
+      prompt: 'consent'       // Force consent screen
+    });
+    const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`;
     window.location.href = authUrl;
   },
 

@@ -14,7 +14,7 @@ const Dashboard = () => {
       const response = await makeAuthorizedRequest('/api/v1/users/', {
         method: 'GET'
       });
-      console.log("dashboard call= ",response)
+      // console.log("dashboard call= ",response)
       setUsers(response);
     } catch (error) {
       console.error('Failed to fetch users:', error);

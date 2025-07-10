@@ -13,18 +13,18 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const initializeAuth = async () => {
       const token = authService.getToken();
-      console.log('Initializing auth, token found:', !!token);
+      // console.log('Initializing auth, token found:', !!token);
       
       if (token) {
         try {
           const savedUser = localStorage.getItem('user');
-          console.log('Saved user found:', !!savedUser);
+          // console.log('Saved user found:', !!savedUser);
           
           if (savedUser) {
             setUser(JSON.parse(savedUser));
           }
           setIsAuthenticated(true);
-          console.log('Auth state restored successfully');
+          // console.log('Auth state restored successfully');
         } catch (error) {
           console.log('Error restoring auth state:', error);
           authService.removeToken();
@@ -43,6 +43,7 @@ export const AuthProvider = ({ children }) => {
     try {
       // console.log('Login credentials: auth context', credentials); // Debug log: g
       const response = await authService.login(credentials);
+      
       // console.log('Login response: auth context', response); // Debug log
       
       // Handle different possible response structures
@@ -68,9 +69,9 @@ export const AuthProvider = ({ children }) => {
   const register = async (userData) => {
     try {
       const response = await authService.register(userData);
-      authService.setToken(response.token);
-      setUser(response.user);
-      setIsAuthenticated(true);
+      // authService.setToken(response.token);
+      // setUser(response.user);
+      // setIsAuthenticated(true);
       return response;
     } catch (error) {
       throw error;
@@ -95,6 +96,8 @@ export const AuthProvider = ({ children }) => {
     login,
     register,
     logout,
+    setIsAuthenticated,
+    setUser,
     googleAuth: authService.googleAuth,
     facebookAuth: authService.facebookAuth,
     githubAuth: authService.githubAuth,
