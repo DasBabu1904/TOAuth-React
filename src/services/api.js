@@ -85,4 +85,42 @@ const googleOAuthRequest = async (code) => {
   return response.json();
 };
 
-export { apiRequest, makeAuthorizedRequest, apiRequestJsonBody, googleOAuthRequest };
+const facebookOAuthRequest = async (code) => {
+  const url = `${API_BASE_URL}/api/v1/users/create_user_facebook`;
+  const config = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ code }),
+  };
+  
+  const response = await fetch(url, config);
+  
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+  
+  return response.json();
+};
+
+const githubOAuthRequest = async (code) => {
+  const url = `${API_BASE_URL}/api/v1/users/create_user_github`;
+  const config = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ code }),
+  };
+  
+  const response = await fetch(url, config);
+  
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+  
+  return response.json();
+};
+
+export { apiRequest, makeAuthorizedRequest, apiRequestJsonBody, googleOAuthRequest, facebookOAuthRequest, githubOAuthRequest };
